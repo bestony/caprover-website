@@ -116,11 +116,15 @@ try {
     docsHtml: `${origin}/docs/get-started.html`,
     legacyEnglishDocs: `${origin}/docs/en/get-started.html`,
     legacySpanishDocs: `${origin}/docs/es-ES/get-started.html`,
+    legacyChineseDocs: `${origin}/docs/zh-CN/get-started.html`,
     docs: `${origin}/docs/get-started`,
     spanishDocs: `${origin}/es-ES/docs/get-started`,
+    chineseDocs: `${origin}/zh-CN/docs/get-started`,
     englishHomepageAlias: `${origin}/en/index.html`,
     spanishHomepage: `${origin}/es-ES/index.html`,
+    chineseHomepage: `${origin}/zh-CN/index.html`,
     spanishComparisonHub: `${origin}/es-ES${marketingRoutes.comparisonHub.path}index.html`,
+    chineseComparisonHub: `${origin}/zh-CN${marketingRoutes.comparisonHub.path}index.html`,
     spanishCoolifyComparison: `${origin}/es-ES${marketingRoutes.coolify.path}index.html`,
     spanishDokployComparison: `${origin}/es-ES${marketingRoutes.dokploy.path}index.html`,
     spanishDokkuComparison: `${origin}/es-ES${marketingRoutes.dokku.path}index.html`,
@@ -145,10 +149,13 @@ try {
   assert.match(legacyEnglishDocsRedirect, /window\.location\.replace\(["']\/docs\/get-started["']/);
   const legacySpanishDocsRedirect = await responses.legacySpanishDocs.text();
   assert.match(legacySpanishDocsRedirect, /window\.location\.replace\(["']\/es-ES\/docs\/get-started["']/);
+  const legacyChineseDocsRedirect = await responses.legacyChineseDocs.text();
+  assert.match(legacyChineseDocsRedirect, /window\.location\.replace\(["']\/zh-CN\/docs\/get-started["']/);
 
   const docs = await responses.docs.text();
   assert.match(docs, /Getting Started/i);
   assert.match(docs, /href=["']?\/es-ES\/docs\/get-started(?:["'\s>])/);
+  assert.match(docs, /href=["']?\/zh-CN\/docs\/get-started(?:["'\s>])/);
   assert.match(docs, /src=["']\/locale-preference\.js["']/);
   const spanishDocs = await responses.spanishDocs.text();
   assert.match(spanishDocs, /<html lang=["']?es-ES(?:["'\s>])/);
@@ -156,6 +163,12 @@ try {
   assert.match(spanishDocs, /Conceptos básicos/);
   assert.match(spanishDocs, /href=["']?\/docs\/get-started(?:["'\s>])/);
   assert.match(spanishDocs, /src=["']\/locale-preference\.js["']/);
+  const chineseDocs = await responses.chineseDocs.text();
+  assert.match(chineseDocs, /<html lang=["']?zh-CN(?:["'\s>])/);
+  assert.match(chineseDocs, /开始使用/);
+  assert.match(chineseDocs, /进阶操作/);
+  assert.match(chineseDocs, /href=["']?\/docs\/get-started(?:["'\s>])/);
+  assert.match(chineseDocs, /src=["']\/locale-preference\.js["']/);
   const englishHomepageAlias = await responses.englishHomepageAlias.text();
   assert.match(englishHomepageAlias, /Deploy apps\./);
   assert.match(englishHomepageAlias, /rel=["']canonical["'][^>]+href=["']https:\/\/caprover\.com\/["']/);
@@ -166,6 +179,17 @@ try {
   assert.match(spanishHomepage, /<main lang=["']es-ES["']/);
   assert.match(spanishHomepage, /rel=["']canonical["'][^>]+href=["']https:\/\/caprover\.com\/es-ES\/["']/);
   assert.match(spanishHomepage, /src=["']\/locale-preference\.js["']/);
+  const chineseHomepage = await responses.chineseHomepage.text();
+  assert.match(chineseHomepage, /掌控你的/);
+  assert.match(chineseHomepage, /href=["']https:\/\/caprover\.com\/zh-CN\/docs\/get-started["']/);
+  assert.match(chineseHomepage, /<html lang=["']zh-CN["']/);
+  assert.match(chineseHomepage, /<main lang=["']zh-CN["']/);
+  assert.match(chineseHomepage, /rel=["']canonical["'][^>]+href=["']https:\/\/caprover\.com\/zh-CN\/["']/);
+  assert.match(chineseHomepage, /src=["']\/locale-preference\.js["']/);
+  const chineseComparisonHub = await responses.chineseComparisonHub.text();
+  assert.match(chineseComparisonHub, /从简单开始，永远不会触顶。/);
+  assert.match(chineseComparisonHub, /\/zh-CN\/compare\//);
+  assert.match(chineseComparisonHub, /\/zh-CN\/docs\/get-started/);
   const spanishComparisonPages = await Promise.all(
     [
       responses.spanishComparisonHub,
@@ -283,6 +307,18 @@ try {
   );
   assert.equal(spanishBrowser.storage.get("caprover.locale"), "es-ES");
 
+  const chineseBrowser = runLocalePreference({
+    pathname: "/docs/get-started",
+    search: "?source=test",
+    hash: "#install",
+    languages: ["zh", "en-US"],
+  });
+  assert.equal(
+    chineseBrowser.redirect,
+    "/zh-CN/docs/get-started?source=test#install",
+  );
+  assert.equal(chineseBrowser.storage.get("caprover.locale"), "zh-CN");
+
   assert.equal(runLocalePreference({ languages: ["fr-FR"] }).redirect, undefined);
   assert.equal(
     runLocalePreference({ languages: ["es-ES"], savedLocale: "en" }).redirect,
@@ -331,7 +367,7 @@ try {
   }
 
   const docsCssContents = [];
-  for (const html of [docs, spanishDocs]) {
+  for (const html of [docs, spanishDocs, chineseDocs]) {
     const stylesheet = docsStylesheet(html);
     const response = await fetch(`${origin}${stylesheet}`);
     assert.equal(response.status, 200);
