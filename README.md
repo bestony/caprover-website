@@ -48,8 +48,9 @@ Docusaurus build inputs before starting or building.
 
 Docusaurus internationalization is configured by `content/locales.json`. English
 is the source language. English documentation is served from `/docs/*`, and
-translated documentation uses the locale prefix, such as `/es-ES/docs/*`.
-Compatibility pages preserve the former `/docs/<locale>/*.html` URLs.
+translated documentation uses the locale prefix, such as `/es-ES/docs/*` or
+`/zh-CN/docs/*`. Compatibility pages preserve the former
+`/docs/<locale>/*.html` URLs.
 
 Each locale is complete and self-contained under `content/<locale>/`:
 
@@ -59,9 +60,10 @@ Each locale is complete and self-contained under `content/<locale>/`:
   interface strings.
 - Add a locale to `content/locales.json` after all three surfaces are complete.
 
-Spanish is enabled in `content/locales.json`. Its documentation is published at
-`/es-ES/docs/*`, and the Docusaurus language menu switches between English and
-Spanish versions of the current document.
+Spanish and Simplified Chinese are enabled in `content/locales.json`. Their
+documentation is published at `/es-ES/docs/*` and `/zh-CN/docs/*`, and the
+Docusaurus language menu switches between the English, Spanish, and Chinese
+versions of the current document.
 
 On an unprefixed page view, the combined static site uses a saved language-menu
 choice or selects a supported locale from the browser's preferences. The URL

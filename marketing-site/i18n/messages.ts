@@ -1,5 +1,6 @@
 import englishCatalog from "../../content/en/marketing.json";
 import spanishCatalog from "../../content/es-ES/marketing.json";
+import chineseCatalog from "../../content/zh-CN/marketing.json";
 
 export const englishMessages = englishCatalog;
 
@@ -24,6 +25,7 @@ export type Messages = UnionToIntersection<
 export const messagesByLocale = {
   en: englishCatalog,
   "es-ES": spanishCatalog,
+  "zh-CN": chineseCatalog,
 } satisfies Record<string, FlatMessages>;
 
 export type Locale = keyof typeof messagesByLocale;
